@@ -18,8 +18,6 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 app.post('/todos', (req, res) => {
-  console.log(req.body);
-  
   let todo = new Todo({
     text: req.body.text
   });
@@ -34,3 +32,7 @@ app.post('/todos', (req, res) => {
 });
 
 app.listen(3000, () => console.log('Server running on port', port));
+
+module.exports = {
+  app
+};
