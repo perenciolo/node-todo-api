@@ -31,6 +31,18 @@ app.post('/todos', (req, res) => {
     }, e => res.status(400).json(e));
 });
 
+app.get('/todos', (req, res) => {
+  Todo.find().then(todos => {
+    res
+      .status(200)
+      .json({
+        todos
+      });
+  }, e => res.status(400).json({
+    error: e
+  }));
+});
+
 app.listen(3000, () => console.log('Server running on port', port));
 
 module.exports = {
