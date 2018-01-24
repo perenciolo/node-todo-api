@@ -68,7 +68,13 @@ app.get('/todos/:id', (req, res) => {
   }, e => res.status(400).json({}));
 });
 
-app.listen(3000, () => console.log('Server running on port', port));
+app.listen(3000, () => {
+  console.log('\n');
+  console.log('-----------------------------');
+  console.log(' Server running on port', port);
+  console.log('-----------------------------');
+  console.log('\n');
+});
 
 module.exports = {
   app
