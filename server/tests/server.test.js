@@ -88,5 +88,17 @@ describe('GET /todos', () => {
         expect(res.body.todos.length).toBe(2);
       })
       .end(done);
-  })
+  });
 });
+
+describe('GET /todos/:id', () => {
+  it('should get todo by id', done => {
+    request(app)
+      .get('/todos/')
+      .expect(200)
+      .expect(res => {
+        expect()
+      })
+      .end(done);
+  });
+})

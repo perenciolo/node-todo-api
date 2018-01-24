@@ -1,3 +1,7 @@
+const {
+  ObjectID
+} = require('mongodb');
+
 let {
   mongoose
 } = require('./db/mongoose');
@@ -41,6 +45,27 @@ app.get('/todos', (req, res) => {
   }, e => res.status(400).json({
     error: e
   }));
+});
+
+app.get('/todos/:id', (req, res) => {
+  let id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).json({
+      error: {
+        message: "Invalid Id."
+      }
+    });
+  }
+  Todo.findById(id).then(todo => {
+    if (!todo) {
+      return res.status(404).json({});
+    }
+    res
+      .status(200)
+      .json({
+        result: todo
+      });
+  }, e => res.status(400).json({}));
 });
 
 app.listen(3000, () => console.log('Server running on port', port));
