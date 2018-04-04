@@ -1,20 +1,21 @@
+const _ = require('lodash');
 const { ObjectID } = require('mongodb');
 
-let { mongoose } = require('./db/mongoose');
+const { mongoose } = require('./db/mongoose');
 
 const express = require('express');
 const bodyParser = require('body-parser');
 
-let { Todo } = require('./models/todo');
-let { User } = require('./models/user');
+const { Todo } = require('./models/todo');
+const { User } = require('./models/user');
 
-let app = express();
+const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
 app.post('/todos', (req, res) => {
-  let todo = new Todo({
+  const todo = new Todo({
     text: req.body.text
   });
 
@@ -85,6 +86,32 @@ app.delete('/todos/:id', (req, res) => {
   );
 });
 
+app.patch('/todos/:id', (req, res) => {
+  const id = req.params.id;
+  const body = _.pick(req.body, ['text', 'completed']);
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).json({ error: { message: 'Invalid Id.' } });
+  }
+
+  if (_.isBoolean(body.completed) && body.completed) {
+    body.completedAt = new Date().getTime();
+  } else {
+    body.completed = false;
+    body.completedAt = null;
+  }
+
+  Todo.findByIdAndUpdate(id, { $set: body }, { new: true })
+    .then(todo => {
+      // no doc, send 404
+      if (!todo) {
+        return res.status(404).json({});
+      }
+      // doc, send doc back with 200
+      res.status(200).json({ result: todo });
+    })
+    .catch(e => res.status(400).json({}));
+});
+
 app.listen(3000, () => {
   console.log('\n');
   console.log('-----------------------------');
@@ -93,6 +120,4 @@ app.listen(3000, () => {
   console.log('\n');
 });
 
-module.exports = {
-  app
-};
+module.exports = { app };
