@@ -121,8 +121,12 @@ app.post('/users', (req, res) => {
 
   user
     .save()
-    .then(doc => {
-      res.status(200).json(doc);
+    .then(() => user.generateAuthToken())
+    .then(token => {
+      res
+        .header('x-auth', token)
+        .status(200)
+        .json(user);
     })
     .catch(e => res.status(400).json(e));
 });
