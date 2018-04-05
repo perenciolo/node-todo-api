@@ -114,6 +114,19 @@ app.patch('/todos/:id', (req, res) => {
     .catch(e => res.status(400).json({}));
 });
 
+// POST /users
+app.post('/users', (req, res) => {
+  const body = _.pick(req.body, ['email', 'password']);
+  const user = new User(body);
+
+  user
+    .save()
+    .then(doc => {
+      res.status(200).json(doc);
+    })
+    .catch(e => res.status(400).json(e));
+});
+
 app.listen(3000, () => {
   console.log('\n');
   console.log('-----------------------------');
